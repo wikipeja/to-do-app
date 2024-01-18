@@ -35,13 +35,11 @@ const Details = React.memo(({navigation}) => {
                     <View style={styles.items}>
                         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                             <Text style={styles.label}>Task Title <Text style={styles.textMuted}> - Required</Text></Text> 
-                            
                             <TextInput placeholder='Write a task' style={styles.input} onChangeText={text => setTask(text)} value={task}></TextInput>
                             <Text style={styles.label}>Task Description <Text style={styles.textMuted}> - Optional</Text></Text>
                             <TextInput placeholder='Add a description' style={styles.input} onChangeText={desc => setDesc(desc)} value={desc}></TextInput>
                         </KeyboardAvoidingView>
                     </View>
-
                     <View style={styles.buttonContainer}>
                         <Pressable style={styles.addButton} onPress={() => addTodoTask()}>
                             <Text style={styles.text}>Add task</Text>
