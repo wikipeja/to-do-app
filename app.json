@@ -5,7 +5,12 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "23294fd4-24e7-4801-b769-b78bcb2e5330"
+      }
+    }
   },
   "name": "todolist"
 }

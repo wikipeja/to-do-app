@@ -1,14 +1,13 @@
 import React from 'react';
 import { useState , useEffect} from 'react';
-import {StyleSheet, Text, View, KeyboardAvoidingView, TextInput ,Pressable, Keyboard, Platform, FlatList, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, Pressable,  FlatList, } from 'react-native';
 import TaskContainer from './TaskContainer';
 import {firebase} from '../config'
 
 const Landing = ({navigation}) => {
-  const [taskItems, setTaskItems] = useState([]);
-
-  //fetch data from firebase
+const [taskItems, setTaskItems] = useState([]);
   const todoRef = firebase.firestore().collection('taskItems')
+
   useEffect(() => {
     todoRef.orderBy('createdAt', 'desc')
     .onSnapshot(querySnapshot => {
@@ -26,27 +25,27 @@ const Landing = ({navigation}) => {
     })
   }, [])
 
-//conditions for the filter
 const [filter, setFilter] = useState('all');
-const [filteredItems, setFilteredItems] = useState([]);
+const [filteredItems, setFilteredItems] = useState(taskItems);
 useEffect(() => {
-  const taskItemsTemp = [...taskItems];
-    if (filter === 'all'){
-      setFilteredItems(taskItemsTemp);
-    }
-    else if (filter === 'done'){
-      setFilteredItems(taskItemsTemp.filter(item => item.taskStatus === 'Done'));
-    }
-    else if (filter === 'undone'){
-      setFilteredItems(taskItemsTemp.filter(item => item.taskStatus === 'Not Done'));
-    }
-    else if (filter === 'alphabetical'){
-      setFilteredItems([...taskItemsTemp].sort((a, b) => a.heading.localeCompare(b.heading)));
-    }
-    else{
-      setFilteredItems(taskItemsTemp);
-    }
-}, [filter, taskItems])
+  switch (filter) {
+    case 'all':
+      setFilteredItems(taskItems);
+      break;
+    case 'done':
+      setFilteredItems(taskItems.filter(item => item.taskStatus === 'Done'));
+      break;
+    case 'undone':
+      setFilteredItems(taskItems.filter(item => item.taskStatus === 'Not Done'));
+      break;
+    case 'alphabetical':
+      setFilteredItems([...taskItems].sort((a, b) => a.heading.localeCompare(b.heading)));
+      break;
+    default:
+      setFilteredItems(taskItems);
+      break;
+  }
+}, [filter, taskItems]);
 
   return (
     <View style={styles.container}>
@@ -57,23 +56,21 @@ useEffect(() => {
         <Pressable onPress={() => setFilter('all')}>
           <Text style={styles.allSquare}>All</Text>
         </Pressable>
+        <Pressable onPress={() => setFilter('alphabetical')}>
+          <Text style={styles.allSquare}>A-Z</Text>
+        </Pressable> 
         <Pressable onPress={() => setFilter('done')}>
           <Text style={styles.doneSquare}>Done</Text>
         </Pressable>
         <Pressable onPress={() => setFilter('undone')}>
           <Text style={styles.notDoneSquare}>Not Done</Text>
         </Pressable> 
-        <Pressable onPress={() => setFilter('alphabetical')}>
-          <Text style={styles.allSquare}>A-Z</Text>
-        </Pressable>
+
       </View>
       <View style={styles.items}>
         <FlatList
           numColumns={1}
-          maxToRenderPerBatch={4}
-          windowSize={10}
           data={filteredItems.slice(0,5)}
-          initialNumToRender={4}
           keyExtractor={(item) => item.id}
           renderItem={({item}) => (
             <View>
@@ -91,7 +88,7 @@ useEffect(() => {
       </View>
      
      <View style={styles.writeTaskWrapper}>
-        <Pressable onPress={() => navigation.navigate('Add')}>
+        <Pressable onPress={() => navigation.navigate('Add') }>
             <View style={styles.addWrapper}>
               <Text style={styles.addText}>Add a task +</Text>
             </View>
@@ -155,7 +152,7 @@ const styles = StyleSheet.create({
     addText:{
       color:'white',
       fontWeight:'500',
-      fontSize:'18'
+      fontSize:18
     },
     allSquare:{
       backgroundColor: "dodgerblue",
@@ -163,7 +160,7 @@ const styles = StyleSheet.create({
       marginRight:15,
       color:"white",
       padding:10,
-      fontSize:'18',
+      fontSize:18,
       fontWeight:'500',
       marginBottom:5,
       overflow: 'hidden',
@@ -174,7 +171,7 @@ const styles = StyleSheet.create({
       marginRight:15,
       color:"white",
       padding:10,
-      fontSize:'18',
+      fontSize:18,
       fontWeight:'500',
       marginBottom:5,
       overflow: 'hidden',
@@ -185,7 +182,7 @@ const styles = StyleSheet.create({
       marginRight:15,
       padding:10,
       color:'white',
-      fontSize:'18',
+      fontSize:18,
       fontWeight:'500',
       marginBottom:5,
       overflow: 'hidden',
